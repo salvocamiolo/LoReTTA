@@ -1,0 +1,7 @@
+src/conda/
+*.fastq
+*.fq
+*.fasta
+*.bam
+*.sam
+
