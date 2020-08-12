@@ -1,3 +1,6 @@
+#!/home/salvo/Github/LoReTTA/src/conda/bin/python
+installationDirectory = "/home/salvo/Github/LoReTTA/"
+ 
 # -*- coding: utf-8 -*-
 
 # Form implementation generated from reading ui file 'GUI.ui'

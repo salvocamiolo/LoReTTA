@@ -36,8 +36,9 @@ else
 	./src/conda/bin/conda install -c bioconda -y bcftools
 	./src/conda/bin/conda install -y matplotlib
 	./src/conda/bin/conda install -c yuxiang -y bam2fastq
-	./src/conda/bin/conda install -c bioconda -y spades 
+	./src/conda/bin/conda install -c bioconda -y spades=3.11
 	./src/conda/bin/conda install -c bioconda -y kmc
+	./src/conda/bin/conda install -c bioconda -y idba
 	
 	fi
 fi
