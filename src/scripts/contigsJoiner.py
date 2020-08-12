@@ -69,7 +69,7 @@ numElongedSequences = 0
 outfile = open(outputFolder+"/scaffolds.fasta","w")
 for a in range(len(orderedContigs)-1):
     print("joining "+orderedContigs[a]+" and "+orderedContigs[a+1])
-    startSeqFile = open("startSeq.fasta","w")
+    startSeqFile = open(outputFolder+"/startSeq.fasta","w")
     if elongingSequence == "":
         startSeqFile.write(">start\n"+contigsSeq[orderedContigs[a]]+"\n")
         startSeq = contigsSeq[orderedContigs[a]]
@@ -79,14 +79,14 @@ for a in range(len(orderedContigs)-1):
         startSeq = elongingSequence
     startSeqFile.close()
 
-    endSeqFile = open("endSeq.fasta","w")
+    endSeqFile = open(outputFolder+"/endSeq.fasta","w")
     endSeqFile.write(">end\n"+contigsSeq[orderedContigs[a+1]]+"\n")
     endSeqFile.close()
 
-    os.system(installationDirectory+"/src/conda/bin/makeblastdb -dbtype nucl -in  endSeq.fasta >null 2>&1")
-    os.system(installationDirectory+"/src/conda/bin/blastn -query startSeq.fasta -db endSeq.fasta -task blastn -outfmt 6 | awk '$9<$10' >outputBlast.txt")
+    os.system(installationDirectory+"/src/conda/bin/makeblastdb -dbtype nucl -in "+outputFolder+"/endSeq.fasta >null 2>&1")
+    os.system(installationDirectory+"/src/conda/bin/blastn -query "+outputFolder+"/startSeq.fasta -db "+outputFolder+"/endSeq.fasta -task blastn -outfmt 6 | awk '$9<$10' > "+outputFolder+"/outputBlast.txt")
 
-    blastOutputFile = open("outputBlast.txt")
+    blastOutputFile = open(outputFolder+"/outputBlast.txt")
     line = blastOutputFile.readline().rstrip()
     print(line)
     if not line:
