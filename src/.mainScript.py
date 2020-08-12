@@ -21,7 +21,7 @@ from datetime import datetime
 
 class Ui_Form(object):
 	def setupUi(self, Form,installationDirectory):
-		Form.setObjectName("Form")
+		Form.setObjectName("LoReTTA")
 		Form.resize(846, 721)
 		self.label = QtWidgets.QLabel(Form)
 		self.label.setGeometry(QtCore.QRect(10, 10, 101, 16))
