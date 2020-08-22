@@ -31,7 +31,7 @@ kmersInReads = []
 if validate == 1:
 	print("Counting kmers")
 	#os.system(installationDirectory+"src/conda/bin/jellyfish count -m 50 -s 1G -t "+numThreads+" -C  -o kmerCount.jf "+read1)
-	os.system(installationDirectory+"/src/conda/bin/kmc -fa  -k50 "+read1+" "+outputFolder+"/kmcDB " + outputFolder+"/ > "+outputFolder+"/null 2>&1")
+	os.system(installationDirectory+"/src/conda/bin/kmc -cs20000 -fa  -k50 "+read1+" "+outputFolder+"/kmcDB " + outputFolder+"/ > "+outputFolder+"/null 2>&1")
 	os.system(installationDirectory+"/src/conda/bin/kmc_dump  "+outputFolder+"/kmcDB "+ outputFolder+"/kmcDB_output > "+outputFolder+"/null 2>&1")
 
 	kmerCount = {}
