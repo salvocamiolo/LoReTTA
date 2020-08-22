@@ -256,7 +256,7 @@ else:
 	print("* * * Mapping original reads to the assembled sequence.... ")
 	
 	
-	os.system(installationDirectory+"/src/conda/bin/python "+installationDirectory+"/src/scripts/slidingAlignment.py -f "+outputFolder+"/finalAssembly1.fasta -t "+self.numThreadsLineEdit.text()+" -r "+reads+"_chopped.fasta_subsample.fasta -o "+outputFolder+" -p "+installationDirectory)
+	os.system(installationDirectory+"/src/conda/bin/python "+installationDirectory+"/src/scripts/slidingAlignment.py -f "+outputFolder+"/finalAssembly1.fasta -t "+numThreads+" -r "+reads+"_chopped.fasta_subsample.fasta -o "+outputFolder+" -p "+installationDirectory)
 	os.system("awk '$3!=\"N\"' "+outputFolder+"/pileup.txt >"+outputFolder+"/pileup2.txt")
 	os.system("mv "+outputFolder+"/pileup2.txt "+outputFolder+"/pileup.txt")
 
