@@ -44,5 +44,21 @@ else
 fi
 
 
+if  test -f "./src/conda/bin/conda2"; then
+	echo "Miniconda2 already installed"
+else
+
+
+	cd src
+	bash Miniconda2-latest-Linux-x86_64.sh -b -p ./conda2
+	cd ../
+	if  test -f "./src/conda/bin/conda"; then
+	echo "Miniconda3 successfully installed"
+	./src/conda2/bin/conda install -c bioconda -y  spades=3.10.1
+	
+	
+	fi
+fi
+
 
 
