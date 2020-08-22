@@ -74,7 +74,7 @@ while True:
 	if validate == 1:
 		numValidated = 0
 
-		if len(fields[4])>1 and (int(info[5]) > int(info[4])): #a deletion
+		if len(fields[4])>1 and (int(info[5]) > 0.7*int(info[4])): #a deletion
 			numValidated+=1
 			if numValidated%100==0:
 				print("Validated %d deletion" %numValidated)
@@ -124,7 +124,7 @@ while True:
 				if int(info[5]) > int(info[4]): #the alternate allele has a highe number of reads than the reference allele
 					outfile.write(line+"\n")
 
-		if len(fields[3])>1 and (int(info[5]) > int(info[4])):
+		if len(fields[3])>1 and (int(info[5]) > 0.7*int(info[4])):
 			#print("Validating deletion at position %s" %fields[1])
 			#print(refSeq[int(fields[1])-25:int(fields[1])-1]+"-"+fields[3]+"-"+refSeq[int(fields[1])+len(fields[3])-1:int(fields[1])+25])
 			#print(refSeq[int(fields[1])-25:int(fields[1])-1]+"-"+fields[4]+"-"+refSeq[int(fields[1])+len(fields[3])-1:int(fields[1])+25+len(fields[3])-1])
