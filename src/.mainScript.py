@@ -671,7 +671,7 @@ class Ui_Form(object):
 			
 
 			os.system("head -2000000 "+reads+"_chopped.fasta > "+reads+"_chopped.fasta_subsample.fasta")
-			os.system(installationDirectory+"/src/conda/bin/python "+installationDirectory+"/src/scripts/slidingAlignment.py -f "+outputFolder+"/scaffolds_gapClosed.fasta -t "+self.numThreadsLineEdit.text()+" -r "+reads+"_chopped.fasta_subsample.fasta -o "+outputFolder+" -p "+installationDirectory)
+			os.system(installationDirectory+"/src/conda/bin/python "+installationDirectory+"/src/scripts/slidingAlignment.py -f "+outputFolder+"/scaffolds_gapClosed.fasta -t "+self.numThreadsLineEdit.text()+" -r "+reads+"_chopped.fasta -o "+outputFolder+" -p "+installationDirectory)
 			os.system("awk '$3!=\"N\"' "+outputFolder+"/pileup.txt >"+outputFolder+"/pileup2.txt")
 			os.system("mv "+outputFolder+"/pileup2.txt "+outputFolder+"/pileup.txt")
 			"""os.system(installationDirectory+"/src/conda/bin/minimap2 -a -x map-pb -t "+self.numThreadsLineEdit.text()+" "+outputFolder+"/scaffolds_gapClosed.fasta "+reads+"_chopped.fasta"+" > "+outputFolder+"/alignment1.sam")
@@ -714,7 +714,7 @@ class Ui_Form(object):
 			self.logTextEdit.append("* * * Mapping original reads to the assembled sequence.... ")
 			self.logTextEdit.repaint()
 			
-			os.system(installationDirectory+"/src/conda/bin/python "+installationDirectory+"/src/scripts/slidingAlignment.py -f "+outputFolder+"/finalAssembly1.fasta -t "+self.numThreadsLineEdit.text()+" -r "+reads+"_chopped.fasta_subsample.fasta -o "+outputFolder+" -p "+installationDirectory)
+			os.system(installationDirectory+"/src/conda/bin/python "+installationDirectory+"/src/scripts/slidingAlignment.py -f "+outputFolder+"/finalAssembly1.fasta -t "+self.numThreadsLineEdit.text()+" -r "+reads+"_chopped.fasta -o "+outputFolder+" -p "+installationDirectory)
 			os.system("awk '$3!=\"N\"' "+outputFolder+"/pileup.txt >"+outputFolder+"/pileup2.txt")
 			os.system("mv "+outputFolder+"/pileup2.txt "+outputFolder+"/pileup.txt")
 			"""os.system(installationDirectory+"/src/conda/bin/minimap2 -a -x map-pb -t "+self.numThreadsLineEdit.text()+" "+outputFolder+"/finalAssembly1.fasta "+reads+"_chopped.fasta"+" > "+outputFolder+"/alignment2.sam")
