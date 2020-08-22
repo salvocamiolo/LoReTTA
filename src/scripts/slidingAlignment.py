@@ -29,8 +29,8 @@ outfile.write("@SQ\tSN:"+seqID+"\tLN:"+str(len(referenceSeq))+"\n")
 outfile.close()
 
 for a in range(0,len(referenceSeq)-5000,+10000):
-    rangeToFill = 10000
-    if (a+10000)>len(referenceSeq):
+    rangeToFill = 12000
+    if (a+12000)>len(referenceSeq):
         rangeToFill = len(referenceSeq)-a
 
     print("Analyzing",a,a+rangeToFill)
