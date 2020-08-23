@@ -27,11 +27,14 @@ for seq_record in SeqIO.parse(refFile,"fasta"):
 outfile = open(outputFolder+"/sliding_alignment.sam","w")
 outfile.write("@SQ\tSN:"+seqID+"\tLN:"+str(len(referenceSeq))+"\n")
 outfile.close()
-
-for a in range(0,len(referenceSeq)-5000,+10000):
+lastRound = False
+for a in range(0,len(referenceSeq),+10000):
+    if lastRound==True:
+        break
     rangeToFill = 12000
     if (a+12000)>len(referenceSeq):
         rangeToFill = len(referenceSeq)-a
+        lastRound = True
 
     print("Analyzing",a,a+rangeToFill)
 
