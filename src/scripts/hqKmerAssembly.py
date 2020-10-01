@@ -55,7 +55,7 @@ while float(len(assembledSequence))/float(refLength) < 0.9:
         outfile.write("\n")
     outfile.close()
     if float(numSeq)>refLength*0.9:
-        os.system(installationDirectory+"/src/conda2/bin/spades.py -t "+numThreads+" -s "+outputFolder+"/"+(reads.split("."))[-1]+"_output.fastq --pacbio "+outputFolder+"/pacbioSubsample.fasta --phred-offset 33 --careful -o "+outputFolder+"/"+(reads.split("."))[-1]+"_outputSpades > "+outputFolder+"/null 2>&1")
+        os.system(installationDirectory+"/src/conda2/bin/python "+installationDirectory+"/src/conda2/bin/spades.py -t "+numThreads+" -s "+outputFolder+"/"+(reads.split("."))[-1]+"_output.fastq --pacbio "+outputFolder+"/pacbioSubsample.fasta --phred-offset 33 --careful -o "+outputFolder+"/"+(reads.split("."))[-1]+"_outputSpades > "+outputFolder+"/null 2>&1")
         print("Spades completed")
 
 
