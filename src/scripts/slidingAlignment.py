@@ -50,11 +50,11 @@ for a in range(0,len(referenceSeq),+10000):
     outfile.close()
 
     os.system(installationDirectory+"/src/conda/bin/minimap2 -t "+numThreads+" -a -x map-pb newSeq.fasta "+reads+" > temp.sam")
-    os.system("samtools view -F 4 temp.sam >>"+outputFolder+"/sliding_alignment.sam")
-    os.system("samtools view -bS -h "+outputFolder+"/sliding_alignment.sam >"+outputFolder+"/sliding_alignment.bam")
-    os.system("samtools sort -o "+outputFolder+"/sliding_alignment_sorted.bam "+outputFolder+"/sliding_alignment.bam")
-    os.system("samtools index "+outputFolder+"/sliding_alignment_sorted.bam ")
-    os.system("samtools mpileup -f "+refFile+" "+outputFolder+"/sliding_alignment_sorted.bam > "+outputFolder+"/pileup.txt")
+    os.system(installationDirectory+"/src/conda/bin/samtools view -F 4 temp.sam >>"+outputFolder+"/sliding_alignment.sam")
+    os.system(installationDirectory+"/src/conda/bin/samtools view -bS -h "+outputFolder+"/sliding_alignment.sam >"+outputFolder+"/sliding_alignment.bam")
+    os.system(installationDirectory+"/src/conda/bin/samtools sort -o "+outputFolder+"/sliding_alignment_sorted.bam "+outputFolder+"/sliding_alignment.bam")
+    os.system(installationDirectory+"/src/conda/bin/samtools index "+outputFolder+"/sliding_alignment_sorted.bam ")
+    os.system(installationDirectory+"/src/conda/bin/samtools mpileup -f "+refFile+" "+outputFolder+"/sliding_alignment_sorted.bam > "+outputFolder+"/pileup.txt")
 
 
 
