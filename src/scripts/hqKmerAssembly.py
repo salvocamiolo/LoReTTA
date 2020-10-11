@@ -33,7 +33,7 @@ while float(len(assembledSequence))/float(refLength) < 0.9:
     #prepare kmer database 
 
     os.system("head -200 "+reads+" > "+outputFolder+"/pacbioSubsample.fasta")
-    os.system(installationDirectory+"/src/conda/bin/kmc -fa  -k"+str(kmerSize)+" "+reads+ " " +outputFolder+"/"+(reads.split("."))[-1]+" "+ outputFolder+"/ > "+outputFolder+"/null 2>&1")
+    os.system(installationDirectory+"/src/conda/bin/kmc -fa -m1 -k"+str(kmerSize)+" "+reads+ " " +outputFolder+"/"+(reads.split("."))[-1]+" "+ outputFolder+"/ > "+outputFolder+"/null 2>&1")
 
     os.system(installationDirectory+"/src/conda/bin/kmc_dump -ci"+str(int(kmerCoverage))+" "+outputFolder+"/"+(reads.split("."))[-1]+" "+ outputFolder+"/"+(reads.split("."))[-1]+"_output > "+outputFolder+"/null 2>&1")
 
