@@ -536,6 +536,16 @@ class Ui_Form(object):
 			msg.exec_()
 			return
 
+		if os.path.isfile(self.gapClosingReadsLineEdit.text()) == False:
+			msg = QMessageBox()
+			msg.setIcon(QMessageBox.Warning)
+			msg.setText("A valid read file was not selected")
+			msg.setWindowTitle("Warning")
+			msg.setDetailedText("You should select a fastq file with the PacBio reads.\n ")
+			msg.setStandardButtons(QMessageBox.Ok)
+			msg.exec_()
+			return
+
 		if os.path.isfile(self.referenceLineEdit.text()) == False:
 			msg = QMessageBox()
 			msg.setIcon(QMessageBox.Warning)
