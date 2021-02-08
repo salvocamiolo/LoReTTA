@@ -16,6 +16,7 @@ import numpy as np
 import time
 import matplotlib.pyplot as plt
 from datetime import datetime
+import random as rd
 
 
 
@@ -205,8 +206,30 @@ class Ui_Form(object):
 		
 
 	def filterReads(self):
+		
+		if os.path.isdir(self.projectFolderLineEdit.text()) == False:
+			msg = QMessageBox()
+			msg.setIcon(QMessageBox.Warning)
+			msg.setText("A valid project folder was not selected")
+			msg.setWindowTitle("Warning")
+			msg.setDetailedText("You should select a folder where all the intermediary file will be stored.\n ")
+			msg.setStandardButtons(QMessageBox.Ok)
+			msg.exec_()
+			return
+
+		if os.path.isfile(self.readsFileLineEdit.text()) == False:
+			msg = QMessageBox()
+			msg.setIcon(QMessageBox.Warning)
+			msg.setText("A valid read file was not selected")
+			msg.setWindowTitle("Warning")
+			msg.setDetailedText("You should select a fastq file with the PacBio reads.\n ")
+			msg.setStandardButtons(QMessageBox.Ok)
+			msg.exec_()
+			return
+		
 		self.logTextEdit.append("* * Extracting high quality read portions....\n")
 		self.logTextEdit.repaint()
+
 
 		
 		inputFile = self.readsFileLineEdit.text()
@@ -221,7 +244,7 @@ class Ui_Form(object):
 		current_time = startTime.strftime("%H:%M:%S")
 		logFile.write("Reads filtering started at "+str(current_time)+"\n\n")
 		totNumBases = 0
-		outfile = open(outputFolder+"/hq_reads.fasta","w")
+		outfile = open(outputFolder+"/"+self.prefixLineEdit.text()+"_hq_reads.fasta","w")
 		for seq_record in SeqIO.parse(inputFile,"fastq"):
 			numSeq+=1
 			totSequences+=1
@@ -264,9 +287,50 @@ class Ui_Form(object):
 
 	
 	def calculateStatistics(self):
+
 		inputFile = self.readsFileLineEdit.text()
 		threshold = self.qualityLineEdit.text()
 		minLen = 150
+
+		if os.path.isdir(self.projectFolderLineEdit.text()) == "":
+			msg = QMessageBox()
+			msg.setIcon(QMessageBox.Warning)
+			msg.setText("A valid project folder was not selected")
+			msg.setWindowTitle("Warning")
+			msg.setDetailedText("You should select a folder where all the intermediary file will be stored.\n ")
+			msg.setStandardButtons(QMessageBox.Ok)
+			msg.exec_()
+			return
+
+		if os.path.isfile(self.readsFileLineEdit.text()) == False:
+			msg = QMessageBox()
+			msg.setIcon(QMessageBox.Warning)
+			msg.setText("A valid read file was not selected")
+			msg.setWindowTitle("Warning")
+			msg.setDetailedText("You should select a fastq file with the PacBio reads.\n ")
+			msg.setStandardButtons(QMessageBox.Ok)
+			msg.exec_()
+			return
+
+		if os.path.isfile(self.referenceLineEdit.text()) == False:
+			msg = QMessageBox()
+			msg.setIcon(QMessageBox.Warning)
+			msg.setText("A valid reference file was not selected")
+			msg.setWindowTitle("Warning")
+			msg.setDetailedText("You should select a fasta formatted file reference genome.\n ")
+			msg.setStandardButtons(QMessageBox.Ok)
+			msg.exec_()
+			return
+
+		if os.path.isdir(self.projectFolderLineEdit.text()) == False:
+			msg = QMessageBox()
+			msg.setIcon(QMessageBox.Warning)
+			msg.setText("A valid output folder was not selected")
+			msg.setWindowTitle("Warning")
+			msg.setDetailedText("You should select an output folder\n ")
+			msg.setStandardButtons(QMessageBox.Ok)
+			msg.exec_()
+			return
 
 		self.logTextEdit.append("Read statistics calculation started")
 		self.logTextEdit.repaint()
@@ -344,7 +408,7 @@ class Ui_Form(object):
 		os.system(installationDirectory+"/src/conda/bin/minimap2 -x map-pb -t "+self.numThreadsLineEdit.text()+" "+refFile+" "+inputFile+" > "+outputFolder+"/outputMinimap")
 
 
-		outfile = open(outputFolder+"/refSpecificReads.fastq","w")
+		outfile = open(outputFolder+"/"+prefixLineEdit.text()+"_refSpecificReads.fastq","w")
 		infile = open(outputFolder+"/outputMinimap")
 		while True:
 			line = infile.readline().rstrip()
@@ -398,6 +462,8 @@ class Ui_Form(object):
 		totalTime = (endTime -startTime).total_seconds()
 		logFile.write("Total processing time: "+str(totalTime)+" seconds")
 		logFile.close()
+		os.system("rm "+outputFolder+"/outputMinimap")
+
 
 
 
@@ -480,7 +546,19 @@ class Ui_Form(object):
 			msg.exec_()
 			return
 
-		outputFolder = self.projectFolderLineEdit.text()
+		if os.path.isdir(self.projectFolderLineEdit.text()) == False:
+			msg = QMessageBox()
+			msg.setIcon(QMessageBox.Warning)
+			msg.setText("A valid output folder was not selected")
+			msg.setWindowTitle("Warning")
+			msg.setDetailedText("You should select an output folder\n ")
+			msg.setStandardButtons(QMessageBox.Ok)
+			msg.exec_()
+			return
+
+
+		outputFolder = self.projectFolderLineEdit.text()+"/tempFolder_"+str(rd.randint(0,100000000))
+		os.system("mkdir "+outputFolder)
 		logFile = open(outputFolder+"/"+self.prefixLineEdit.text()+"_assembly.log","w")
 		startTime = datetime.now()
 		current_time = startTime.strftime("%H:%M:%S")
@@ -650,16 +728,7 @@ class Ui_Form(object):
 			now = datetime.now()
 			current_time = now.strftime("%H:%M:%S")
 			logFile.write("Consensus calling started at "+str(current_time)+"\n\n")
-			
-			
-			"""outfile = open(outputFolder+"/subSample.fasta","w")
-			totCoverage = 0
-			for seq_record in SeqIO.parse(reads,"fasta"):
-				totCoverage+=len(str(seq_record.seq))
-				SeqIO.write(seq_record,outfile,"fasta")
-				if totCoverage > 100*len(refSeq):
-					break
-			outfile.close()"""
+
 
 			self.logTextEdit.append("* * * Assembly correction ")
 			self.logTextEdit.append("* * * Chopping reads.... ")
@@ -674,35 +743,10 @@ class Ui_Form(object):
 			os.system(installationDirectory+"/src/conda/bin/python "+installationDirectory+"/src/scripts/slidingAlignment.py -f "+outputFolder+"/scaffolds_gapClosed.fasta -t "+self.numThreadsLineEdit.text()+" -r "+reads+"_chopped.fasta -o "+outputFolder+" -p "+installationDirectory)
 			os.system("awk '$3!=\"N\"' "+outputFolder+"/pileup.txt >"+outputFolder+"/pileup2.txt")
 			os.system("mv "+outputFolder+"/pileup2.txt "+outputFolder+"/pileup.txt")
-			"""os.system(installationDirectory+"/src/conda/bin/minimap2 -a -x map-pb -t "+self.numThreadsLineEdit.text()+" "+outputFolder+"/scaffolds_gapClosed.fasta "+reads+"_chopped.fasta"+" > "+outputFolder+"/alignment1.sam")
-			self.logTextEdit.append("* * * Converting sam to bam.... ")
-			self.logTextEdit.repaint()
-			os.system(installationDirectory+"/src/conda/bin/samtools view -F 4 -bS -h "+outputFolder+"/alignment1.sam > "+outputFolder+"/alignment1.bam")
-			self.logTextEdit.append("* * * Sorting.... ")
-			self.logTextEdit.repaint()
-			os.system(installationDirectory+"/src/conda/bin/samtools sort -o "+outputFolder+"/alignment_sorted1.bam "+outputFolder+"/alignment1.bam")
-			self.logTextEdit.append("* * * Indexing.... ")
-			self.logTextEdit.repaint()
-			os.system(installationDirectory+"/src/conda/bin/samtools index "+outputFolder+"/alignment_sorted1.bam")
-
-			self.logTextEdit.append("* * * Creating pilleup.... ")
-			self.logTextEdit.repaint()
-			os.system(installationDirectory+"/src/conda/bin/samtools mpileup -f "+outputFolder+ \
-				"/scaffolds_gapClosed.fasta "+outputFolder +"/alignment_sorted1.bam > "+outputFolder+ \
-					"/pileup1.txt")
-			os.system("awk '$3!=\"N\"' "+outputFolder+"/pileup1.txt >"+outputFolder+"/pileup2.txt")
-			os.system("mv "+outputFolder+"/pileup2.txt "+outputFolder+"/pileup1.txt")
-
-			self.logTextEdit.append("* * * Calling variants.... ")
-			self.logTextEdit.repaint()"""
-
-
 
 
 			os.system(installationDirectory+"/src/conda/bin/varscan mpileup2cns "+outputFolder+"/pileup.txt --variants --output-vcf --min-var-freq 0.5 --min-avg-qual 0 --strand-filter 0 --min-coverage 5   > "+outputFolder+"/output1.vcf")
 			
-
-
 
 			os.system(installationDirectory+"/src/conda/bin/bgzip -f -c "+outputFolder+"/output1.vcf > "+outputFolder+"/output1.vcf.gz")
 			os.system(installationDirectory+"/src/conda/bin/tabix -f "+outputFolder+"/output1.vcf.gz")
@@ -717,25 +761,7 @@ class Ui_Form(object):
 			os.system(installationDirectory+"/src/conda/bin/python "+installationDirectory+"/src/scripts/slidingAlignment.py -f "+outputFolder+"/finalAssembly1.fasta -t "+self.numThreadsLineEdit.text()+" -r "+reads+"_chopped.fasta -o "+outputFolder+" -p "+installationDirectory)
 			os.system("awk '$3!=\"N\"' "+outputFolder+"/pileup.txt >"+outputFolder+"/pileup2.txt")
 			os.system("mv "+outputFolder+"/pileup2.txt "+outputFolder+"/pileup.txt")
-			"""os.system(installationDirectory+"/src/conda/bin/minimap2 -a -x map-pb -t "+self.numThreadsLineEdit.text()+" "+outputFolder+"/finalAssembly1.fasta "+reads+"_chopped.fasta"+" > "+outputFolder+"/alignment2.sam")
-			self.logTextEdit.append("* * * Converting sam to bam.... ")
-			self.logTextEdit.repaint()
-			os.system(installationDirectory+"/src/conda/bin/samtools view -F 4 -bS -h "+outputFolder+"/alignment2.sam > "+outputFolder+"/alignment2.bam")
-			self.logTextEdit.append("* * * Sorting.... ")
-			self.logTextEdit.repaint()
-			os.system(installationDirectory+"/src/conda/bin/samtools sort -o "+outputFolder+"/alignment_sorted2.bam "+outputFolder+"/alignment2.bam")
-			self.logTextEdit.append("* * * Indexing.... ")
-			self.logTextEdit.repaint()
-			os.system(installationDirectory+"/src/conda/bin/samtools index "+outputFolder+"/alignment_sorted2.bam")
 
-			self.logTextEdit.append("* * * Creating pilleup.... ")
-			self.logTextEdit.repaint()
-			os.system(installationDirectory+"/src/conda/bin/samtools mpileup -f "+outputFolder+ \
-				"/finalAssembly1.fasta "+outputFolder +"/alignment_sorted2.bam > "+outputFolder+ \
-					"/pileup2.txt")
-
-			os.system("awk '$3!=\"N\"' "+outputFolder+"/pileup2.txt >"+outputFolder+"/pileup3.txt")
-			os.system("mv "+outputFolder+"/pileup3.txt "+outputFolder+"/pileup2.txt")"""
 
 			self.logTextEdit.append("* * * Calling variants.... ")
 			self.logTextEdit.repaint()
@@ -745,7 +771,11 @@ class Ui_Form(object):
 			os.system(installationDirectory+"/src/conda/bin/tabix -f "+outputFolder+"/output_filtered2.vcf.gz")
 			os.system("cat "+outputFolder+"/finalAssembly1.fasta | "+installationDirectory+"/src/conda/bin/bcftools consensus "+outputFolder+"/output_filtered2.vcf.gz > "+outputFolder+"/finalAssembly.fasta")
 
-
+			#comment the following line to leave intermediate files
+			os.system("mv "+outputFolder+"/finalAssembly.fasta "+self.projectFolderLineEdit.text()+"/"+self.prefixLineEdit.text()+"_assembly.fasta")
+			os.system("rm -rf "+outputFolder)
+			os.system("rm -rf null")
+			
 
 			
 
@@ -800,12 +830,12 @@ class Ui_Form(object):
 		self.r_estCoverageLineEdit.setText(_translate("Form", "--"))
 		self.label_19.setText(_translate("Form", "Coverage"))
 		self.readsFileButton.setText(_translate("Form", "Select"))
-		self.qualityStatsButton.setText(_translate("Form", "Plot quality score distribution"))
+		self.qualityStatsButton.setText(_translate("Form", "Calculate read quality statistics"))
 		self.filterButton.setText(_translate("Form", "Filter"))
 		self.qualityLineEdit.setText(_translate("Form", "30"))
 		self.label_9.setText(_translate("Form", "Min. quality"))
-		self.label_8.setText(_translate("Form", "Assembly"))
-		self.label_10.setText(_translate("Form", "Gap closing"))
+		self.label_8.setText(_translate("Form", "Input file"))
+		self.label_10.setText(_translate("Form", "Gap closing reads"))
 		self.gapClosingReadsButton.setText(_translate("Form", "Select"))
 		self.numThreadsLabel_2.setText(_translate("Form", "Homology"))
 		self.homologyLineEdit.setText(_translate("Form", "0.7"))

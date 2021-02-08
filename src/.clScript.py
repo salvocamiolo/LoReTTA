@@ -6,6 +6,7 @@ from Bio import SeqIO
 import numpy as np
 import time
 from datetime import datetime
+import random as rd
 
 import argparse
 
@@ -22,7 +23,7 @@ parser.add_argument("-cr","--closingReads",required=True,help="Fasta file with r
 parser.add_argument("-ho","--homology",required=True,help="The homology the target and the reference genome share")
 
 args = vars(parser.parse_args())
-outputFolder = args['outputFolder']
+projectFolder = args['outputFolder']
 inputReadsFile = args['inputReads']
 refFile = args['reference']
 threshold = int(args['quality'])
@@ -34,6 +35,9 @@ closingReads = args['closingReads']
 homology = args['homology']
 #Convert the input fastq file in fast format
 
+
+outputFolder = projectFolder+"/tempFolder_"+str(rd.randint(0,100000000))
+os.system("mkdir "+outputFolder)
 
 def chopReads(inputFile):
 	numSeq = 0
@@ -202,15 +206,7 @@ else:
 	now = datetime.now()
 	current_time = now.strftime("%H:%M:%S")
 	logFile.write("Consensus calling started at "+str(current_time)+"\n\n")
-	"""outfile = open(outputFolder+"/subSample.fasta","w")
-	totCoverage = 0
-	for seq_record in SeqIO.parse(reads,"fasta"):
-		totCoverage+=len(str(seq_record.seq))
-		SeqIO.write(seq_record,outfile,"fasta")
-		if totCoverage > 100*len(refSeq):
-			break
-	outfile.close()
-"""
+
 	print("* * * Assembly correction ")
 	print("* * * Chopping reads.... ")
 	
@@ -223,24 +219,6 @@ else:
 	os.system("awk '$3!=\"N\"' "+outputFolder+"/pileup.txt >"+outputFolder+"/pileup2.txt")
 	os.system("mv "+outputFolder+"/pileup2.txt "+outputFolder+"/pileup.txt")
 	
-	"""os.system(installationDirectory+"/src/conda/bin/minimap2 -a -x map-pb -t "+numThreads+" "+outputFolder+"/scaffolds_gapClosed.fasta "+reads+"_chopped.fasta"+" > "+outputFolder+"/alignment1.sam")
-	print("* * * Converting sam to bam.... ")
-	
-	os.system(installationDirectory+"/src/conda/bin/samtools view -F 4 -bS -h "+outputFolder+"/alignment1.sam > "+outputFolder+"/alignment1.bam")
-	print("* * * Sorting.... ")
-	
-	os.system(installationDirectory+"/src/conda/bin/samtools sort -o "+outputFolder+"/alignment_sorted1.bam "+outputFolder+"/alignment1.bam")
-	print("* * * Indexing.... ")
-	
-	os.system(installationDirectory+"/src/conda/bin/samtools index "+outputFolder+"/alignment_sorted1.bam")
-
-	print("* * * Creating pilleup.... ")
-	
-	os.system(installationDirectory+"/src/conda/bin/samtools mpileup -f "+outputFolder+ \
-		"/scaffolds_gapClosed.fasta "+outputFolder +"/alignment_sorted1.bam > "+outputFolder+ \
-			"/pileup1.txt")
-	os.system("awk '$3!=\"N\"' "+outputFolder+"/pileup1.txt >"+outputFolder+"/pileup2.txt")
-	os.system("mv "+outputFolder+"/pileup2.txt "+outputFolder+"/pileup1.txt")"""
 
 	print("* * * Calling variants.... ")
 	
@@ -260,25 +238,6 @@ else:
 	os.system("awk '$3!=\"N\"' "+outputFolder+"/pileup.txt >"+outputFolder+"/pileup2.txt")
 	os.system("mv "+outputFolder+"/pileup2.txt "+outputFolder+"/pileup.txt")
 
-	"""os.system(installationDirectory+"/src/conda/bin/minimap2 -a -x map-pb -t "+numThreads+" "+outputFolder+"/finalAssembly1.fasta "+reads+"_chopped.fasta"+" > "+outputFolder+"/alignment2.sam")
-	print("* * * Converting sam to bam.... ")
-	
-	os.system(installationDirectory+"/src/conda/bin/samtools view -F 4 -bS -h "+outputFolder+"/alignment2.sam > "+outputFolder+"/alignment2.bam")
-	print("* * * Sorting.... ")
-	
-	os.system(installationDirectory+"/src/conda/bin/samtools sort -o "+outputFolder+"/alignment_sorted2.bam "+outputFolder+"/alignment2.bam")
-	print("* * * Indexing.... ")
-	
-	os.system(installationDirectory+"/src/conda/bin/samtools index "+outputFolder+"/alignment_sorted2.bam")
-
-	print("* * * Creating pilleup.... ")
-	
-	os.system(installationDirectory+"/src/conda/bin/samtools mpileup -f "+outputFolder+ \
-		"/finalAssembly1.fasta "+outputFolder +"/alignment_sorted2.bam > "+outputFolder+ \
-			"/pileup2.txt")
-
-	os.system("awk '$3!=\"N\"' "+outputFolder+"/pileup2.txt >"+outputFolder+"/pileup3.txt")
-	os.system("mv "+outputFolder+"/pileup3.txt "+outputFolder+"/pileup2.txt")"""
 
 	print("* * * Calling variants.... ")
 	
@@ -288,9 +247,10 @@ else:
 	os.system(installationDirectory+"/src/conda/bin/tabix -f "+outputFolder+"/output_filtered2.vcf.gz")
 	os.system("cat "+outputFolder+"/finalAssembly1.fasta | "+installationDirectory+"/src/conda/bin/bcftools consensus "+outputFolder+"/output_filtered2.vcf.gz > "+outputFolder+"/finalAssembly.fasta")
 
-
-
-
+	#comment the following line to leave intermediate files
+	os.system("mv "+outputFolder+"/finalAssembly.fasta "+projectFolder+"/"+prefix+"_assembly.fasta")
+	os.system("rm -rf "+outputFolder)
+	os.system("rm -rf null")
 
 	print("\n\n De novo assembly finished!")
 	

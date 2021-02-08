@@ -12,7 +12,7 @@ echo " " >> LoReTTA_cl
 cat LoReTTA_cl ./src/.clScript.py >temp ; mv temp LoReTTA_cl
 chmod +x LoReTTA_cl
 
-
+touch installation.log
 
 if  test -f "./src/conda/bin/conda"; then
 	echo "Miniconda3 already installed"
@@ -302,7 +302,8 @@ else
 	fi
 fi
 
-
+mv condaList ./src
+mv installation.log ./src
 
 	
 	
