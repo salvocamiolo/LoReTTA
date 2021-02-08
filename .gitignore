@@ -1,8 +1,3 @@
 src/conda/
 src/conda2/
-*.fastq
-*.fq
-*.fasta
-*.bam
-*.sam
 
