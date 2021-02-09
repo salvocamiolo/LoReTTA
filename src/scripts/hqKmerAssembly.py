@@ -33,7 +33,8 @@ while float(len(assembledSequence))/float(refLength) < 0.9:
     #prepare kmer database 
 
     os.system("head -200 "+reads+" > "+outputFolder+"/pacbioSubsample.fasta")
-    os.system(installationDirectory+"/src/conda/bin/kmc -fa -m1 -k"+str(kmerSize)+" "+reads+ " " +outputFolder+"/"+(reads.split("."))[-1]+" "+ outputFolder+"/ > "+outputFolder+"/null 2>&1")
+  
+    os.system(installationDirectory+"/src/conda/bin/kmc -fa -m2 -k"+str(kmerSize)+" "+reads+ " " +outputFolder+"/"+(reads.split("."))[-1]+" "+ outputFolder+"/ > "+outputFolder+"/null 2>&1")
 
     os.system(installationDirectory+"/src/conda/bin/kmc_dump -ci"+str(int(kmerCoverage))+" "+outputFolder+"/"+(reads.split("."))[-1]+" "+ outputFolder+"/"+(reads.split("."))[-1]+"_output > "+outputFolder+"/null 2>&1")
 
@@ -54,6 +55,7 @@ while float(len(assembledSequence))/float(refLength) < 0.9:
             outfile.write("G")
         outfile.write("\n")
     outfile.close()
+
     if float(numSeq)>refLength*0.9:
         os.system(installationDirectory+"/src/conda2/bin/python "+installationDirectory+"/src/conda2/bin/spades.py -t "+numThreads+" -s "+outputFolder+"/"+(reads.split("."))[-1]+"_output.fastq --pacbio "+outputFolder+"/pacbioSubsample.fasta --phred-offset 33 --careful -o "+outputFolder+"/"+(reads.split("."))[-1]+"_outputSpades > "+outputFolder+"/null 2>&1")
         print("Spades completed")

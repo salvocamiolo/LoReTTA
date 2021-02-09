@@ -774,8 +774,9 @@ class Ui_Form(object):
 			os.system(installationDirectory+"/src/conda/bin/tabix -f "+outputFolder+"/output_filtered2.vcf.gz")
 			os.system("cat "+outputFolder+"/finalAssembly1.fasta | "+installationDirectory+"/src/conda/bin/bcftools consensus "+outputFolder+"/output_filtered2.vcf.gz > "+outputFolder+"/finalAssembly.fasta")
 
-			#comment the following line to leave intermediate files
+			
 			os.system("mv "+outputFolder+"/finalAssembly.fasta "+self.projectFolderLineEdit.text()+"/"+self.prefixLineEdit.text()+"_assembly.fasta")
+			#comment the following line to leave intermediate files
 			os.system("rm -rf "+outputFolder)
 			os.system("rm -rf null")
 			
