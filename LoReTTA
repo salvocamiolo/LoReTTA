@@ -411,7 +411,7 @@ class Ui_Form(object):
 		os.system(installationDirectory+"/src/conda/bin/minimap2 -x map-pb -t "+self.numThreadsLineEdit.text()+" "+refFile+" "+inputFile+" > "+outputFolder+"/outputMinimap")
 
 
-		outfile = open(outputFolder+"/"+prefixLineEdit.text()+"_refSpecificReads.fastq","w")
+		outfile = open(outputFolder+"/"+self.prefixLineEdit.text()+"_refSpecificReads.fastq","w")
 		infile = open(outputFolder+"/outputMinimap")
 		while True:
 			line = infile.readline().rstrip()
