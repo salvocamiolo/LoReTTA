@@ -1,5 +1,5 @@
-#!/home/salvo/Desktop/myGit/LoReTTA/src/conda/bin/python
-installationDirectory = "/home/salvo/Desktop/myGit/LoReTTA/"
+#!/home3/scc20x/Software/mySoftware/LoReTTA/src/conda/bin/python
+installationDirectory = "/home3/scc20x/Software/mySoftware/LoReTTA/"
  
 # -*- coding: utf-8 -*-
 
@@ -539,6 +539,16 @@ class Ui_Form(object):
 			msg.exec_()
 			return
 
+		if os.path.isfile(self.gapClosingReadsLineEdit.text()) == False:
+			msg = QMessageBox()
+			msg.setIcon(QMessageBox.Warning)
+			msg.setText("A valid read file was not selected")
+			msg.setWindowTitle("Warning")
+			msg.setDetailedText("You should select a fastq file with the PacBio reads.\n ")
+			msg.setStandardButtons(QMessageBox.Ok)
+			msg.exec_()
+			return
+
 		if os.path.isfile(self.referenceLineEdit.text()) == False:
 			msg = QMessageBox()
 			msg.setIcon(QMessageBox.Warning)
@@ -774,9 +784,8 @@ class Ui_Form(object):
 			os.system(installationDirectory+"/src/conda/bin/tabix -f "+outputFolder+"/output_filtered2.vcf.gz")
 			os.system("cat "+outputFolder+"/finalAssembly1.fasta | "+installationDirectory+"/src/conda/bin/bcftools consensus "+outputFolder+"/output_filtered2.vcf.gz > "+outputFolder+"/finalAssembly.fasta")
 
-			
-			os.system("mv "+outputFolder+"/finalAssembly.fasta "+self.projectFolderLineEdit.text()+"/"+self.prefixLineEdit.text()+"_assembly.fasta")
 			#comment the following line to leave intermediate files
+			os.system("mv "+outputFolder+"/finalAssembly.fasta "+self.projectFolderLineEdit.text()+"/"+self.prefixLineEdit.text()+"_assembly.fasta")
 			os.system("rm -rf "+outputFolder)
 			os.system("rm -rf null")
 			
